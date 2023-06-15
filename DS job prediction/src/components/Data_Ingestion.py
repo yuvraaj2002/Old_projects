@@ -5,21 +5,13 @@ from src.logger import logging
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
-# from src.components.data_transformation import DataTransformation
-# from src.components.data_transformation import DataTransformationConfig
-# from src.components.model_trainer import ModelTrainerConfig
-# from src.components.model_trainer import ModelTrainer
+from src.components.Data_Processing import DataTransformation
+from src.components.Data_Processing import DataTransformationConfig
+from src.components.Model_training import ModelTrainerConfig
+from src.components.Model_training import ModelTrainer
 
 
-from dataclasses import dataclass
-import os
-import logging
-import pandas as pd
-from sklearn.model_selection import train_test_split
-
-# Define a data class called DataIngestionConfig
-
-
+# Let's create a DataIngestionConfig class for initial setup of input data
 @dataclass
 class DataIngestionConfig:
     # Define three properties with default values using os.path.join
@@ -27,9 +19,8 @@ class DataIngestionConfig:
     test_data_path: str = os.path.join('artifacts', "test.csv")
     raw_data_path: str = os.path.join('artifacts', "data.csv")
 
+
 # Create a class called DataIngestion
-
-
 class DataIngestion:
     def __init__(self):
         # Instantiate an instance of DataIngestionConfig
@@ -43,11 +34,11 @@ class DataIngestion:
             df = pd.read_csv('notebook\data\data_science_job.csv')
             logging.info('Read the dataset as dataframe')
 
-            # Create the directory structure for the train_data_path
+            # Creating a directory named artifacts
             os.makedirs(os.path.dirname(
                 self.ingestion_config.train_data_path), exist_ok=True)
 
-            # Save the dataframe as a CSV file at raw_data_path
+            # Save the dataframe as a CSV file at raw_data_path(data.csv)
             df.to_csv(self.ingestion_config.raw_data_path,
                       index=False, header=True)
 
@@ -56,11 +47,11 @@ class DataIngestion:
             train_set, test_set = train_test_split(
                 df, test_size=0.2, random_state=42)
 
-            # Save the train set as a CSV file at train_data_path
+            # Save the train set as a CSV file at train_data_path(train.csv)
             train_set.to_csv(
                 self.ingestion_config.train_data_path, index=False, header=True)
 
-            # Save the test set as a CSV file at test_data_path
+            # Save the test set as a CSV file at test_data_path(test.csv)
             test_set.to_csv(self.ingestion_config.test_data_path,
                             index=False, header=True)
 
@@ -77,12 +68,14 @@ class DataIngestion:
 
 
 if __name__ == "__main__":
+
     obj = DataIngestion()
+    # Return -> train,test data path
     train_data, test_data = obj.initiate_data_ingestion()
 
-    # data_transformation = DataTransformation()
-    # train_arr, test_arr, _ = data_transformation.initiate_data_transformation(
-    #     train_data, test_data)
+    data_transformation = DataTransformation()
+    train_arr, test_arr, _ = data_transformation.initiate_data_transformation(
+        train_data, test_data)
 
-    # modeltrainer = ModelTrainer()
-    # print(modeltrainer.initiate_model_trainer(train_arr, test_arr))
+    modeltrainer = ModelTrainer()
+    print(modeltrainer.initiate_model_trainer(train_arr, test_arr))
