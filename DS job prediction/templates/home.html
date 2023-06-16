@@ -6,7 +6,7 @@
 <body>
     <h1>Flask App Form</h1>
 
-    <form method="POST" action="/submit">
+    <form action="{{ url_for('predict_datapoint')}}" method="post">
         <div class="mb3">
             <label class="form-label">City Development Index</label>
             <input class="form-control" type="number" name="city_development_index" placeholder="Enter City Development Index" min="0.0" max="1.0" step="0.1" required>
@@ -27,8 +27,8 @@
             <label class="form-label">Relevant Experience</label>
             <select class="form-control" name="relevent_experience" required>
                 <option value="">Select Relevant Experience</option>
-                <option value="Has relevant experience">Has relevant experience</option>
-                <option value="No relevant experience">No relevant experience</option>
+                <option value="Has relevent experience">Has relevent experience</option>
+                <option value="No relevent experience">No relevent experience</option>
             </select>
         </div>
         
@@ -44,6 +44,7 @@
         </div>
         
         <!-- Education level -->
+        <!-- Primary School', 'High School', 'Graduate', 'Masters', 'Phd' -->
         <div class="mb3">
             <label class="form-label">Education Level</label>
             <select class="form-control" name="education_level" required>
@@ -51,7 +52,7 @@
                 <option value="Graduate">Graduate</option>
                 <option value="Masters">Masters</option>
                 <option value="High School">High School</option>
-                <option value="PhD">PhD</option>
+                <option value="Phd">Phd</option>
                 <option value="Primary School">Primary School</option>
             </select>
         </div>
@@ -116,12 +117,12 @@
         
         <!-- Button for prediction -->
         <div class="mb-3">
-            <input class="btn btn-primary" type="submit" value="Wll I get job" required />
+            <input class="btn btn-primary" type="submit" value="Wll I get job ?" required />
         </div>
 
         <h2>
-            THE  prediction is {{results}}
-         </h2>
+            The  prediction is {{results}}
+        </h2>
 
     </form>
 </body>
