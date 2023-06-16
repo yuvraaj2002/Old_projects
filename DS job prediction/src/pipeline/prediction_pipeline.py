@@ -14,12 +14,10 @@ class PredictPipeline:
             # Path for the model and preprocessor pickle file
             model_path = os.path.join("artifacts", "model.pkl")
             preprocessor_path = os.path.join('artifacts', 'preprocessor.pkl')
-            print("Before Loading")
 
             # Loading the model and preprocessor using the path
             model = load_object(file_path=model_path)
             preprocessor = load_object(file_path=preprocessor_path)
-            print("After Loading")
 
             # Applying transformation
             data_scaled = preprocessor.transform(features)
@@ -34,14 +32,14 @@ class PredictPipeline:
 
 class CustomData:
     def __init__(self,
-                 city_development_index: str,
+                 city_development_index: float,
                  gender: str,
                  relevent_experience: str,
-                 enrolled_university,
+                 enrolled_university: str,
                  education_level: str,
                  major_discipline: str,
                  experience: int,
-                 company_size: int,
+                 company_size: str,
                  company_type: str,
                  training_hours: int):
 
