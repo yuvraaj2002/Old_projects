@@ -1,48 +1,58 @@
-import streamlit as st
+from flask import Flask, request, render_template
 import numpy as np
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder, MinMaxScaler
-import pickle
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from src.pipeline.prediction_pipeline import CustomData, PredictPipeline
 
-# Importing the model and dataframe
-pipe = pickle.load(open('pipe.pkl', 'rb'))
-df = pickle.load(open('df.pkl', 'rb'))
+application = Flask(__name__)
+app = application
 
-
-# Let's write a title for the application
-st.title("Data Science job prediction Web app")
+# Route for a home page
 
 
-# Taking input from the user
-city_dev_index = st.slider("Enter your City development index", 0.0, 1.0, 0.2)
-relevent_experience = st.selectbox(
-    'Do you have relevent experience ?', df['relevent_experience'].unique())
-Enrolled_university = st.selectbox(
-    'Select your university enrollment level', df['enrolled_university'].unique())
-education_level = st.selectbox(
-    'Select your education level', df['education_level'].unique())
-major_discipline = st.selectbox(
-    'Select your Major discipline', df['major_discipline'].unique())
-Experience = st.slider("Enter your year of experience", 0, 60, 3)
-company_size = st.selectbox('Select company size', df['company_size'].unique())
-company_type = st.selectbox(
-    'Select your company type', df['company_type'].unique())
-training_hours = st.number_input("Enter your training hours", value=0)
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
-# Creating a numpy array so that we could feed it into the pipeline
-Input_data = np.array([city_dev_index, relevent_experience, Enrolled_university, education_level,
-                       major_discipline, Experience, company_size, company_type, training_hours])
-
-
-# Button
-button_clicked = st.button("Make Prediction")
-if button_clicked:
-    Input_data = Input_data.reshape(1, 9)
-    result = int(pipe.predict(Input_data))
-    if result == 1:
-        st.write("Will Get Job")
+@app.route('/predictdata', methods=['GET', 'POST'])
+def predict_datapoint():
+    if request.method == 'GET':
+        return render_template('home.html')
     else:
-        st.write("Will not get job")
+        data = CustomData(
+
+            city_development_index=float(
+                request.form.get('city_development_index')),
+            gender=request.form.get('gender'),
+            relevent_experience=request.form.get('relevent_experience'),
+            enrolled_university=request.form.get('enrolled_university'),
+            education_level=request.form.get('education_level'),
+            major_discipline=request.form.get('major_discipline'),
+            experience=int(request.form.get('experience')),
+            company_size=(request.form.get('company_size')),
+            company_type=request.form.get('company_type'),
+            training_hours=int(request.form.get('training_hours'))
+        )
+
+        # Creating a dataframe
+        pred_df = data.get_data_as_data_frame()
+
+        # Making an object of PredictPipeline
+        predict_pipeline = PredictPipeline()
+
+        try:
+            results = predict_pipeline.predict(pred_df)
+            print(results)
+        except Exception as e:
+            print(e)
+            return render_template('home.html', results='Error predicting datapoint')
+
+        if (results == 0):
+            return render_template('home.html', results='No')
+
+        return render_template('home.html', results='Yes')
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", debug=True)
