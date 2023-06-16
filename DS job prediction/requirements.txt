@@ -4,5 +4,8 @@ seaborn
 matplotlib
 datetime
 scikit-learn
+category_encoders
+dill
+flask
 
 -e .
