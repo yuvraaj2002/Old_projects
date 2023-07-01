@@ -2,6 +2,10 @@ pandas
 numpy 
 seaborn
 matplotlib
-pyplot
+datetime
+scikit-learn
+category_encoders
+dill
+flask
 
 -e .
